@@ -25,17 +25,19 @@ unsigned long debounceTime = 30;
 unsigned long timeNeededToTurnOffDebounce = 1000;
 bool debounceDisabled = false;
 
-unsigned long LargestHour = 1200;
-unsigned long LargestMin = 60;
+unsigned long LargestHour = 9900;
+unsigned long LargestMin = 100;
 
 // hour and minutes are added together to get the time to display
-unsigned long hour = 1200;
+unsigned long hour = 0;
 unsigned long minute = 0;
 unsigned long time = hour + minute;
 bool isAM = false; // if the LED should be on or not indicating if it is AM or PM
 
 unsigned long lastMinuteTick = millis();
-
+/**
+ * This function tests to see if the bottom two digits need to be set to 0 and increment the upper two digits
+ */
 void checkMinute()
 {
     if (minute > LargestMin - 1)
@@ -50,6 +52,9 @@ void checkMinute()
     time = hour + minute;
 }
 
+/**
+ * This function adds 1 to the number being displayed if time mode is on. (not currently in use)
+ */
 void timeAddMinute()
 {
     minute++;
@@ -57,6 +62,9 @@ void timeAddMinute()
     checkMinute();
 }
 
+/**
+ * this function adds to the number displayed if the button is pressed
+ */
 void buttonAddMinute()
 {
     lastTimeIncremented = millis();
@@ -64,6 +72,9 @@ void buttonAddMinute()
     checkMinute();
 }
 
+/**
+ * deboucnes the button. and calls buttonAddMinute
+ */
 void buttonStuff()
 {
     if (millis() - lastButtonAttempt > debounceTime) // if last time was at least x ago
@@ -86,6 +97,9 @@ void buttonStuff()
     lastButtonAttempt = millis();
 }
 
+/**
+ * setup code goes here
+ */
 void setup()
 {
     byte numDigits = 4;
@@ -103,6 +117,9 @@ void setup()
     buttonUpState = digitalRead(BUTTON);
 }
 
+/**
+ * put code to be run here
+ */
 void loop()
 {
     sevseg.setNumber(time);
@@ -116,9 +133,5 @@ void loop()
     else // if button is not pressed sets button to not pressed
     {
         buttonState = buttonUpState;
-    }
-    if (millis() - lastMinuteTick > 60000)
-    {
-        timeAddMinute();
     }
 }
